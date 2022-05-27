@@ -1,0 +1,233 @@
+﻿
+@{
+    ViewData["Title"] = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.1.3/jszip.min.js"></script>
+
+
+<script>
+
+  
+   
+
+    function updateTask() {
+
+
+        $("#taskdetails").on("click", "#update", function () {
+
+            var url = $(this).data("target");
+
+           
+
+            $.get(url, function (data) { })
+                .done(function (data) {
+                    
+                    $("#modelView .modal-body").html(data);
+                    $("#modelView").modal("show");
+                })
+
+                .fail(function () {
+
+                    $("#modelView .modal-body").text("Error!!");
+                    $("#modelView").modal("show");
+                })
+        });
+
+
+
+
+
+    }
+</script>
+
+<div class="row">
+    <div class="col-md-6">
+        <div class="stopwatch">
+
+            <div class="circle">
+                <span class="time" id="display">00:00:00</span>
+            </div>
+            <br />
+            <div class="controls">
+
+            </div>
+
+
+
+            <div class=" btn-group">
+                <button class="btn btn-success" onclick="showForm()"><i class="fa-solid fa-plus"></i> Create Task</button>
+
+                <button class="btn btn-warning" id="pauseButton"><i class="fa-solid fa-pause"></i>  Pause</button>
+
+                <button class="btn btn-dark"><i class="fa-solid fa-circle-check"></i> Finish</button>
+                <button class="btn btn-danger"><i class="fa-solid fa-trash"></i> Delete</button>
+                <script>
+                    function showForm() {
+
+                        document.getElementById("form").style.visibility = "visible";
+                        document.getElementById("cancel").style.visibility = "visible";
+
+
+                    }
+
+                    function unShowForm() {
+
+                        document.getElementById("form").style.visibility = "hidden";
+                        document.getElementById("cancel").style.visibility = "hidden";
+
+                    }
+
+                </script>
+            </div>
+            <div class="container-fluid">
+
+                <div class="form-group">
+                    <button class="btn btn-warning" style="visibility:hidden;float:right;" onclick="unShowForm()" id="cancel">X</button>
+
+                </div>
+
+                <form id="form" style="visibility:hidden;" method="post">
+                    <input name="Username" value="@User.Identity.Name" hidden />
+                    <input name="TaskProcess" value="Created" hidden />
+
+                    <div class="form-group">
+                        <label class="form-label">Task Name</label>
+                        <input type="text" name="TaskName" class="form-control" required />
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Task Description</label>
+                        <textarea name="TaskDesc" class="form-control" autofocus>
+
+                            </textarea>
+                    </div>
+
+                    <div class="form-group">
+                        <div class="row">
+                            <div class="col-lg-4">
+                                <input type="number" class="form-control" name="ScheduledHour" />
+                            </div>
+                            <a style="padding-top:0.5em;">Hour</a>
+
+                            <div class="col-lg-4">
+                                <input type="number" name="ScheduledMin" class="form-control" />
+                            </div>
+                            <a style="padding-top:0.5em; ">Min</a>
+                        </div>
+
+
+                    </div>
+                    <button class="btn btn-success" style="float:right;"><i class="fa-solid fa-play"></i> Create</button>
+
+                </form>
+            </div>
+
+
+        </div>
+    </div>
+    <div class="col-md-6" >
+        <div class="container-fluid">
+            <br />
+            <br />
+            <br />
+            <h4 class="text-left">All Tasks</h4>
+            <br />
+
+           
+            <div id="modelView" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="">
+                <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+
+                        <div class="modal-body">
+
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
+            <ul class="list-group">
+                @foreach (var item in ViewBag.allTasksbyUser)
+                {
+
+
+                    <li class="list-group-item d-flex justify-content-between align-items-center" id="taskdetails">
+
+                        @{
+                            var remaningTime = Convert.ToInt32(item.ScheduledTime) - Convert.ToInt32(item.TimeSpent);
+                        }
+
+                        <i class="fa-solid fa-list-check"></i>
+                        <a>Task Name : @item.TaskName</a>
+                        <a>Task Detail : @item.TaskDesc</a>
+                        <a>Task Duration : @item.TimeSpent </a>
+                        <a>Task Remaning : @remaningTime</a>
+
+                        <span class="badge badge-primary badge-pill">@item.TaskProcess</span>
+
+                        <div>
+                            @if (remaningTime != 0)
+                            {
+                                <a href="/Dashboard/SingleTask?taskId=@item.TaskId" class="btn btn-sm btn-outline-success"><i class="fa-solid fa-play"></i> Go on </a>
+                            }
+
+                            <button id="update" data-target="/Dashboard/EditTask?taskId=@item.TaskId" class="btn btn-sm btn-outline-success" data-toggle="modal" onclick="updateTask()"><i class="fa-solid fa-highlighter"></i> Edit</button>
+
+                            <button class="btn btn-sm btn-outline-danger"><i class="fa-solid fa-trash"></i> Delete</button>
+                        </div>
+
+
+                    </li>
+                }
+               
+
+
+            </ul>
+        </div>
+    </div>
+</div>
+
+
+<style>
+    .stopwatch {
+        display: grid;
+        justify-items: center;
+        grid-row-gap: 23px;
+        width: 100%;
+        padding-top: 25px;
+    }
+
+    .circle {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 270px;
+        width: 270px;
+        border: 6px dotted;
+        border-radius: 50%;
+    }
+
+    .time {
+        font-family: "Roboto Mono", monospace;
+        font-weight: 300;
+        font-size: 48px;
+    }
+
+    .gold {
+        font-weight: 900;
+        color: #f2c94c;
+        text-shadow: 0 0 0px #fff, 0 0 50px #f2c94c;
+    }
+
+    .controls {
+        display: flex;
+        justify-content: space-between;
+        width: 187px;
+    }
+</style>

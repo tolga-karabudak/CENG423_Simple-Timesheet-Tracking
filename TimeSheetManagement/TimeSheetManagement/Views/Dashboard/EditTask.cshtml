@@ -1,0 +1,25 @@
+﻿@model TimeSheetManagement.Models.Task
+@{
+    Layout = null;
+}
+
+<form class="pl-3 pr-3" action="/Dashboard/EditTask/" method="post">
+
+    <h4 class="card-title text-center text-dark">Updating Task</h4>
+    <div class="form-group">
+        @Html.TextBoxFor(x => x.TaskId, new { @class = "form-control", @hidden = "hidden" })
+        <label for="username">Task Name</label>
+        @Html.TextBoxFor(x => x.TaskName, new { @class = "form-control", @required = "required" })
+    </div>
+    <div class="form-group">
+    
+        <label for="username">Task Description</label>
+        @Html.TextBoxFor(x => x.TaskDesc, new { @class = "form-control", @required = "required" })
+    </div>
+
+    <div class="form-group text-center">
+        <button class="btn btn-success" type="submit">
+            Update Task
+        </button>
+    </div>
+</form>

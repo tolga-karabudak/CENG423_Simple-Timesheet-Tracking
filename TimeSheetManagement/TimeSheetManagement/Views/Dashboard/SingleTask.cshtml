@@ -1,0 +1,247 @@
+﻿
+@{
+    ViewData["Title"] = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+@model List<TimeSheetManagement.Models.Task>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+@{ 
+    var taskId = Model.Select(x => x.TaskId).FirstOrDefault();
+}
+
+<div class="row">
+    <div class="col-md-6">
+        <div class="stopwatch">
+
+            <div class="circle">
+                <span class="time" id="display">00:00:00</span>
+            </div>
+            <br />
+            <div class="controls">
+
+            </div>
+
+            <div class=" btn-group">
+             
+
+                  <a class="btn btn-success text-white"  href="/Dashboard/Index/" ><i class="fa-solid fa-rotate-left"></i> Go Back </a>
+                  <form method="Post" action="/Dashboard/startTask/">
+
+                      <input name="TaskId" value="@taskId" />
+                      <input name="TaskProcess" value="Started" />
+
+                      <input name="TimeSpent" value="145" />
+                      <button class="btn btn-success" id="playButton" type="submit"><i class="fa-solid fa-play"></i> Start</button>
+
+                  </form>
+                   
+                    <button class="btn btn-warning" id="pauseButton"><i class="fa-solid fa-pause"></i>  Pause</button>
+
+                    <button class="btn btn-dark"><i class="fa-solid fa-circle-check"></i> Finish</button>
+
+                    <button class="btn btn-danger"><i class="fa-solid fa-trash"></i> Delete</button>
+
+               
+            
+            </div>
+            <div class="container-fluid">
+                @foreach(var item in Model)
+                {
+
+
+
+                    <div class="form-group">
+                        <label class="form-label">Task Name</label>
+                        <input type="text" value="@item.TaskName" class="form-control" readonly />
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Task Description </label>
+                        <textarea class="form-control"  readonly>@item.TaskDesc
+                            </textarea>
+                    </div>
+
+                    <div class="form-group">
+                        <div class="row">
+                            <div class="col-lg-4">
+                                <input type="number" value="@item.ScheduledHour" class="form-control"  readonly/>
+                            </div>
+                            <a style="padding-top:0.5em;">Hour</a>
+
+                            <div class="col-lg-4">
+                                <input type="number" value="@item.ScheduledMin" class="form-control"  readonly />
+                            </div>
+                            <a style="padding-top:0.5em;">Min</a>
+                        </div>
+
+
+                    </div>
+                }
+
+            </div>
+
+
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="container-fluid">
+            <br />
+            <br />
+            <br />
+            <h4 class="text-left">All Tasks</h4>
+            <br />
+            <ul class="list-group">
+                @foreach (var item in ViewBag.allTasksbyUser)
+                {
+
+
+                <li class="list-group-item d-flex justify-content-between align-items-center">
+
+                    @{
+                    var remaningTime = Convert.ToInt32(item.ScheduledTime) - Convert.ToInt32(item.TimeSpent);
+                    }
+
+                    <i class="fa-solid fa-list-check"></i>
+                    <a>Task Name : @item.TaskName</a>
+                    <a>Task Detail : @item.TaskDesc</a>
+                    <a>Task Duration : @item.TimeSpent </a>
+                    <a>Task Remaning : @remaningTime</a>
+
+                    <span class="badge badge-primary badge-pill">@item.TaskProcess</span>
+                   
+                    <div>
+                        @if (remaningTime != 0)
+                        {
+                        <button class="btn btn-sm btn-outline-success"><i class="fa-solid fa-play"></i> Go on </button>
+                        }
+
+                        <button class="btn btn-sm btn-outline-success"><i class="fa-solid fa-highlighter"></i> Edit</button>
+                        <button class="btn btn-sm btn-outline-danger"><i class="fa-solid fa-trash"></i> Delete</button>
+                    </div>
+
+
+                </li>
+                }
+
+
+            </ul>
+        </div>
+    </div>
+</div>
+
+
+
+
+
+<script>
+    function timeToString(time) {
+        let diffInHrs = time / 3600000;
+        let hh = Math.floor(diffInHrs);
+
+        let diffInMin = (diffInHrs - hh) * 60;
+        let mm = Math.floor(diffInMin);
+
+        let diffInSec = (diffInMin - mm) * 60;
+        let ss = Math.floor(diffInSec);
+
+        let diffInMs = (diffInSec - ss) * 100;
+        let ms = Math.floor(diffInMs);
+
+        let formattedMM = mm.toString().padStart(2, "0");
+        let formattedSS = ss.toString().padStart(2, "0");
+        let formattedMS = ms.toString().padStart(2, "0");
+
+        return `${formattedMM}:${formattedSS}:${formattedMS}`;
+    }
+
+    // Declare variables to use in our functions below
+
+    let startTime;
+    let elapsedTime = 0;
+    let timerInterval;
+
+    // Create function to modify innerHTML
+
+    function print(txt) {
+        document.getElementById("display").innerHTML = txt;
+    }
+
+    // Create "start", "pause" and "reset" functions
+
+    function start() {
+        startTime = Date.now() - elapsedTime;
+        timerInterval = setInterval(function printTime() {
+            elapsedTime = Date.now() - startTime;
+            print(timeToString(elapsedTime));
+        }, 10);
+        showButton("PAUSE");
+    }
+
+    function pause() {
+        clearInterval(timerInterval);
+        showButton("PLAY");
+    }
+
+    function reset() {
+        clearInterval(timerInterval);
+        print("00:00:00");
+        elapsedTime = 0;
+        showButton("PLAY");
+    }
+
+    // Create function to display buttons
+
+    function showButton(buttonKey) {
+        const buttonToShow = buttonKey === "PLAY" ? playButton : pauseButton;
+        const buttonToHide = buttonKey === "PLAY" ? pauseButton : playButton;
+        buttonToShow.style.display = "block";
+        buttonToHide.style.display = "none";
+    }
+    // Create event listeners
+
+    let playButton = document.getElementById("playButton");
+    let pauseButton = document.getElementById("pauseButton");
+    let resetButton = document.getElementById("resetButton");
+
+    playButton.addEventListener("click", start);
+    pauseButton.addEventListener("click", pause);
+    resetButton.addEventListener("click", reset);
+</script>
+<style>
+    .stopwatch {
+        display: grid;
+        justify-items: center;
+        grid-row-gap: 23px;
+        width: 100%;
+        padding-top: 25px;
+    }
+
+    .circle {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 270px;
+        width: 270px;
+        border: 6px dotted;
+        border-radius: 50%;
+    }
+
+    .time {
+        font-family: "Roboto Mono", monospace;
+        font-weight: 300;
+        font-size: 48px;
+    }
+
+    .gold {
+        font-weight: 900;
+        color: #f2c94c;
+        text-shadow: 0 0 0px #fff, 0 0 50px #f2c94c;
+    }
+
+    .controls {
+        display: flex;
+        justify-content: space-between;
+        width: 187px;
+    }
+</style>
+
