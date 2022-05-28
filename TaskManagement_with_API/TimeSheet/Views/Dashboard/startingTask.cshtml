@@ -1,0 +1,214 @@
+﻿
+@{
+    ViewData["Title"] = "startingTask";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+@model List<TimeSheet.Models.Task>
+@{ 
+    var taskName = Model.Select(x => x.TaskName).FirstOrDefault();
+}
+<div class="row">
+    <div class="col-lg-7">
+        <div class="card">
+            <!--Card Header-->
+            <div class="card-header">
+                <p>
+
+
+                    <span class="float-left">
+
+                        <span class="today">Processing Task : @taskName </span>
+
+
+                    </span>
+                </p>
+
+            </div>
+            <!--Card Body-->
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-lg-4">
+                        <div class="circle">
+                            <span class="today" id="digital-clock"></span>
+
+                        </div>
+
+                        <span class="today text-center">Remaning</span>
+
+                    </div>
+                    <div class="col-lg-4">
+
+                    </div>
+
+                    <div class="col-lg-4">
+                        <div class="circle">
+                            <span class="today" id="digital-clock">
+                                00:00:00
+                            </span>
+                        </div>
+
+                        <span class="today text-center">Spent</span>
+                   
+                    </div>
+
+
+                    <button class="btn btn-light"><i class="fa fa-play"></i> Start</button>
+                    <button class="btn btn-light"><i class="fa fa-stop"></i> Pause</button>
+                    <button class="btn btn-light"><i class="fa fa-check-circle"></i> Finished</button>
+                    <button class="btn btn-light"><i class="fa fa-trash"></i> Trask</button>
+
+                </div>
+
+                <br />
+                @foreach (var data in Model)
+                {
+                    <div class="form-group">
+                        <label>Task Name</label>
+                        <input type="text" placeholder="Task Name..." value="@data.TaskName" class="form-control" readonly/>
+                    </div>
+                    <div class="form-group">
+                        <label>Task Description</label>
+                        <input type="text" placeholder="Task Description..." value="@data.TaskDesc"  class="form-control" readonly/>
+                    </div>
+                    <div class="form-group">
+                        <label>Hour</label>
+                        <input type="number" placeholder="Hour..." value="@data.ScheduledHour" class="form-control" readonly/>
+                    </div>
+                    <div class="form-group">
+                        <label>Minutes</label>
+                        <input type="number" value="@data.ScheduledMin" class="form-control" readonly />
+                    </div>
+                }
+
+
+
+
+
+
+
+            </div>
+
+
+        </div>
+    </div>
+    <div class="col-lg-5">
+
+        <!--Card-->
+        <div class="card">
+            <!--Card Header-->
+            <div class="card-header">
+                <p>
+                    <button data-toggle="collapse" href="#collapseFiltering" role="button" aria-expanded="false" aria-controls="collapseExample" class="btn btn-light"> <i class="fa-solid fa-filter"></i> Filtering Options </button>
+                </p>
+                <p>
+                    <a class="btn btn-light" href="/Dashboard/Index/"><i class="fa-solid fa-angles-left"></i> Go Back</a>
+                </p>
+
+                <div class="collapse" id="collapseFiltering">
+                    <div class="input-group md-form form-sm form-2 pl-0">
+                        <select class="form-control">
+                            <option>Sort by latest</option>
+                            <option>Show only completed tasks</option>
+                            <option>Show only processing tasks</option>
+                            <option>Show only trashed tasks</option>
+                            <option>Sort by task duration ascending</option>
+                            <option>
+                                Sort by task duration
+                                descdending
+                            </option>
+                        </select>
+                    </div>
+                    <br />
+                    <button class="btn btn-light"><i class="fa fa-check"></i> Apply</button>
+                </div>
+
+
+            </div>
+            <!--Card Body-->
+            <div class="card-body">
+                <p class="heading1">
+                    <span class="today">Completed Tasks</span>
+                    <span class="float-right headingright">7h 15min</span>
+
+                </p>
+                <p>
+                    <i style="font-size:20px;color:#153063;" class="fa-solid fa-thumbtack md-2"></i>
+
+                    <span style="font-size:22px;" class="task mt-4"> Take kids to school</span>
+                    <br />
+                    <span style="font-size:14px;" class="task mt-4">Task Description : It's a task</span>
+                    <br />
+                    <span style="font-size:14px;" class="task mt-4">Task Duration : 47 min </span>
+                    <br />
+                    <span style="font-size:14px;" class="task mt-4">Completed Time : 47 min </span>
+
+
+                </p>
+                <button class="btn btn-light"><i class="fa fa-pen"></i> Edit</button>
+                <button class="btn btn-light"><i class="fa fa-play"></i> Continue</button>
+                <button class="btn btn-light"><i class="fa fa-trash"></i> Trash</button>
+
+
+
+            </div>
+        </div>
+    </div>
+
+</div>
+
+
+<style>
+    .form-control:focus {
+        border-color: #153063;
+        box-shadow: inset 0 1px 1px #153063, 0 0 8px #153063;
+    }
+
+    .btn-light {
+        background-color: #d3d9dd;
+    }
+
+    .circle {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 150px;
+        width: 150px;
+        border: 6px dotted;
+        border-radius: 50%;
+    }
+</style>
+
+
+<script>
+    $(document).ready(function () {
+        setInterval(function () {
+            currentTime = getDateTime();
+            document.getElementById("digital-clock").innerHTML = currentTime;
+        }, 1000);
+    });
+    function getDateTime() {
+        var now = new Date();
+
+
+        var hour = now.getHours();
+        var minute = now.getMinutes();
+        var second = now.getSeconds();
+
+        if (hour.toString().length == 1) {
+            hour = '0' + hour;
+        }
+        if (minute.toString().length == 1) {
+            minute = '0' + minute;
+        }
+        if (second.toString().length == 1) {
+            second = '0' + second;
+        }
+        var dateTime = hour + ':' + minute + ':' + second;
+        return dateTime;
+    }
+
+</script>
+
