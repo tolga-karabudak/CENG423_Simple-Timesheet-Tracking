@@ -19,7 +19,8 @@ namespace TimeSheetManagement.Migrations
                     ScheduledMin = table.Column<int>(nullable: false),
                     ScheduledTime = table.Column<int>(nullable: false),
                     TimeSpent = table.Column<int>(nullable: false),
-                    TaskProcess = table.Column<string>(nullable: true)
+                    TaskProcess = table.Column<string>(nullable: true),
+                    TaskStatus = table.Column<bool>(nullable: true)
                 },
                 constraints: table =>
                 {

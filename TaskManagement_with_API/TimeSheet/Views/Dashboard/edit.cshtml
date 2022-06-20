@@ -16,7 +16,7 @@
 
                     <span class="float-left">
 
-                        <span class="today">Create Task</span>
+                        <span class="today">Edit Task</span>
 
 
                     </span>
@@ -29,37 +29,36 @@
                  
                    
 
-                    <button data-toggle="collapse" href="#collapseCreatingTask" role="button" aria-expanded="false" aria-controls="collapseExample" class="btn btn-light"><i class="fa-solid fa-grip"></i> Create Task</button>
+                    <button data-toggle="collapse" href="#collapseCreatingTask" role="button" aria-expanded="false" aria-controls="collapseExample" class="btn btn-light"><i class="fa-solid fa-grip"></i> Edit Task</button>
 
                 </div>
                 <div class="collapse" id="collapseCreatingTask">
                     <br />
-                    <form method="post">
+                    <form method="post" action="@Url.Action("edit", "Dashboard")">
+                        <input name="TaskId" value=@Model.TaskId hidden />
                         <input name="Username" value="@User.Identity.Name" hidden />
-                        <input name="TaskProcess" value="Created" hidden />
+                        <input name="TaskProcess" value="Edited" hidden />
                         <input name="TaskStatus" value="True" hidden />
 
                         <div class="form-group">
                             <label>Task Name</label>
-                            <input type="text" name="TaskName" placeholder="Task Name..." class="form-control" required />
+                            <input type="text" name="TaskName" placeholder="Task Name..." class="form-control" value=@Model.TaskName required />
                         </div>
                         <div class="form-group">
                             <label>Task Description</label>
-                            <textarea name="TaskDesc" id="summernote"  autofocus="autofocus" required>
-
-                                </textarea>
+                            <textarea name="TaskDesc" id="summernote"  autofocus="autofocus" required>@Model.TaskDesc</textarea>
                         </div>
                         <div class="form-group">
                             <label>Hour</label>
-                            <input type="number" name="ScheduledHour" placeholder="Hour..." class="form-control" required />
+                            <input type="number" name="ScheduledHour" placeholder="Hour..." value=@Model.ScheduledHour class="form-control" required />
                         </div>
                         <div class="form-group">
                             <label>Minutes</label>
-                            <input type="number" name="ScheduledMin" placeholder="Minutes..." class="form-control" required />
+                            <input type="number" name="ScheduledMin" placeholder="Minutes..." value=@Model.ScheduledMin class="form-control" required />
                         </div>
 
                         <button class="btn btn-light" type="submit">
-                            <i class="fa-solid fa-file-signature"></i> Save and Start
+                            <i class="fa-solid fa-file-signature"></i> Save
                         </button>
                     </form>
 
@@ -68,51 +67,6 @@
             </div>
 
 
-        </div>
-    </div>
-    <div class="col-lg-5">
-
-        <!--Card-->
-        <div class="card">
-            <!--Card Body-->
-            <div class="card-body">
-                <p class="heading1">
-                    <span class="today">All Tasks</span>
-                    <span class="float-right headingright"></span>
-
-                </p>
-                    @foreach (var data in Model)
-                    {
-                        <p>
-                            <i style="font-size:20px;color:#153063;" class="fa-solid fa-thumbtack md-2"></i>
-
-                            <span style="font-size:22px;" class="task mt-4">Task name: @data.TaskName</span>
-                            <br />
-                            <span style="font-size:14px;" class="task mt-4">Task Description: @data.TaskDesc</span>
-                            <br />
-                            <span style="font-size:14px;" class="task mt-4">Task Duration: @data.ScheduledHour hour @data.ScheduledMin minutes</span>
-                            <br />
-                            <span style="font-size:14px;" class="task mt-4">Time Spent: @(@data.TimeSpent / 3600) hour @((@data.TimeSpent % 3600) / 60)  minutes </span>
-                             <br />
-                            <span style="font-size:14px;" class="task mt-4">Task Status: @data.TaskProcess</span>
-                    
-
-                        </p>
-
-                        <button class="btn btn-light" onclick="location.href='@Url.Action("editView", new {id=@data.TaskId})'"><i class="fa fa-pen"></i> Edit</button>
-                        @if (@data.TaskProcess != "Completed")
-                        {
-                            <button class="btn btn-light" onclick="location.href='@Url.Action("continueTask", new {id=@data.TaskId})'"><i class="fa fa-play"></i> Continue</button>
-                        }
-                        <button class="btn btn-light" onclick="location.href='@Url.Action("remove", new {id=@data.TaskId})'"><i class="fa fa-trash"></i> Trash</button>
-                    }
-
-
-
-
-
-
-            </div>
         </div>
     </div>
 
