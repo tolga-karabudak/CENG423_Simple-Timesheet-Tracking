@@ -1,3 +1,3 @@
 docker pull kaanabb/web-app-timesheet
 
-docker run -e "ACCEPT_EULA=Y" -e "SA_PASSWORD=Timesheet2022" -p 1433:1433 -d web-app-timesheet:latest
+docker run -e "ACCEPT_EULA=Y" -e "SA_PASSWORD=Timesheet2022" -p 1433:1433 -d kaanabb/web-app-timesheet:latest
