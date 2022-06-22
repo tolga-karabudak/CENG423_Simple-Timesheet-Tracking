@@ -46,7 +46,7 @@ namespace TimeSheet.Controllers
         {
             if (!string.IsNullOrEmpty(apiVersion))
             {
-                return Ok("Asp.net Core 3.1");
+                return Ok("Asp.net Core 6.0");
             }
             else
             {
