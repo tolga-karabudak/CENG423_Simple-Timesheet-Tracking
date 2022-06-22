@@ -213,7 +213,10 @@ csx/
 # Microsoft Azure Emulator
 ecf/
 rcf/
-
+*.[Pp]ublish.xml
+*.azurePubxml
+*.pubxml
+*.publishproj
 # Windows Store app package directories and files
 AppPackages/
 BundleArtifacts/
