@@ -9,8 +9,7 @@ namespace TimeSheet.Models
     public class User
     {
 
-        /*------------------ Error Message ları validasyon mesajları olarak girin , asp-validation-for da kullanacağız size bırakıyorum bu tarafı veya client-side validation
-         yapılabilir FluentValidation vs ------------------*/
+      
 
         [Key]
         public string username { get; set; }
